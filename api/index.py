@@ -133,13 +133,6 @@ def update_waitlist(waitlist):
     #if os.environ.get("APP_STATUS") != "dev":
     upload_file("waitlist.json", "text/json")
 
-def create_enquiry_file(filename, enquiry):
-    #if os.environ.get("APP_STATUS") == "dev":
-    #    os.makedirs("enquiries", exist_ok=True)
-    #    dump_json(enquiry, f"enquiries/{filename}")
-    #else:
-    enquires_folder_id = ""
-    upload_file(filename, "text/json", folder_id=enquires_folder_id)
 
 @app.route('/add_to_waitlist', methods=['POST'])
 def add_to_waitlist():
