@@ -78,8 +78,8 @@ def download_file(file_id, output_path):
         return False
 
 def send_email(subject, body, to_email):
-    sender_email = json.loads(os.getenv("GMAIL_ADDRESS"))
-    sender_password = json.loads(os.getenv("GOOGLE_APP_PASSWORD"))
+    sender_email = os.getenv("GMAIL_ADDRESS")
+    sender_password = os.getenv("GOOGLE_APP_PASSWORD")
     
     msg = MIMEMultipart()
     msg["From"] = sender_email
