@@ -88,7 +88,7 @@ def send_email(subject, body, to_email):
     
     msg.attach(MIMEText(body, "plain"))
     
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+    with smtplib.SMTP_SSL("smtp.gmail.com", 587) as server:
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, to_email, msg.as_string())
 
