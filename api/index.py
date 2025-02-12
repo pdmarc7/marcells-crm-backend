@@ -11,9 +11,10 @@ from google.oauth2 import service_account
 from googleapiclient.errors import HttpError
 import io
 import os
+import base64
 
 # Replace with your service account credentials file path
-SERVICE_ACCOUNT_FILE = json.loads(os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON"))
+SERVICE_ACCOUNT_FILE = json.loads(base64.b64decode(os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")).decode())
 
 # Define the scopes
 SCOPES = ['https://www.googleapis.com/auth/drive']
