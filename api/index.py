@@ -12,15 +12,26 @@ from googleapiclient.errors import HttpError
 import io
 import os
 import base64
+import tempfile
 
-# Replace with your service account credentials file path
-SERVICE_ACCOUNT_FILE = base64.b64decode(os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")).decode()
+# Decode the base64-encoded service account JSON
+json_str = base64.b64decode(os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")).decode()
+
 # Define the scopes
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
+# Write the JSON to a temporary file
+with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_file:
+    temp_file.write(json_str.encode())
+    temp_file_path = temp_file.name  # Store file path
+
 # Authenticate using service account
 creds = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    temp_file_path, scopes=SCOPES
+)
+
+# Optional: Clean up the file after use
+os.unlink(temp_file_path)
 
 # Build the Drive API service
 service = build('drive', 'v3', credentials=creds)
