@@ -14,8 +14,7 @@ import os
 import base64
 
 # Replace with your service account credentials file path
-SERVICE_ACCOUNT_FILE = json.loads(base64.b64decode(os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")).decode())
-
+SERVICE_ACCOUNT_FILE = base64.b64decode(os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")).decode()
 # Define the scopes
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
