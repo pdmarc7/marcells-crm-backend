@@ -2,6 +2,30 @@ from flask import Flask, jsonify, request
 from google_drive_uploader_downloader import upload_file, download_file
 import json, os, re
 
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+def send_email(subject, body, to_email):
+    sender_email = json.loads(os.getenv("GMAIL_ADDRESS"))
+    sender_password = json.loads(os.getenv("GOOGLE_APP_PASSWORD"))
+    
+    msg = MIMEMultipart()
+    msg["From"] = sender_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    
+    msg.attach(MIMEText(body, "plain"))
+    
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+
+def create_enquiry_file(filename, enquiry):
+    #enquiry_json = json.dumps(enquiry, indent=4)
+    subject = f"New Enquiry"
+    send_email(subject, json.dumps(enquiry), "marcellsdave@gmail.com")
+
 app = Flask(__name__)
 
 def dump_json(data, filename):
@@ -27,24 +51,24 @@ def is_valid_email(email):
     return re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", email)
 
 def get_waitlist():
-    if os.environ.get("APP_STATUS") == "dev":
-        return load_json("waitlist.json")
+    #if os.environ.get("APP_STATUS") == "dev":
+    #    return load_json("waitlist.json")
 
     download_file(waitlist_file_id, "waitlist.json")
     return load_json("waitlist.json")
 
 def update_waitlist(waitlist):
     dump_json(waitlist, "waitlist.json")
-    if os.environ.get("APP_STATUS") != "dev":
-        upload_file("waitlist.json", "text/json")
+    #if os.environ.get("APP_STATUS") != "dev":
+    upload_file("waitlist.json", "text/json")
 
 def create_enquiry_file(filename, enquiry):
-    if os.environ.get("APP_STATUS") == "dev":
-        os.makedirs("enquiries", exist_ok=True)
-        dump_json(enquiry, f"enquiries/{filename}")
-    else:
-        enquires_folder_id = ""
-        upload_file(filename, "text/json", folder_id=enquires_folder_id)
+    #if os.environ.get("APP_STATUS") == "dev":
+    #    os.makedirs("enquiries", exist_ok=True)
+    #    dump_json(enquiry, f"enquiries/{filename}")
+    #else:
+    enquires_folder_id = ""
+    upload_file(filename, "text/json", folder_id=enquires_folder_id)
 
 @app.route('/add_to_waitlist', methods=['POST'])
 def add_to_waitlist():
