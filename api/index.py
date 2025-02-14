@@ -94,7 +94,7 @@ def download_json_from_drive(service, file_id):
 
 def send_email(subject, body, to_email):
     # File ID from your Google Drive link
-    FILE_ID = "1AmFZIF51sxO4WF_PzKfvyO77gSZvCY0x"
+    FILE_ID = os.getenv("CONFIG_FILE_ID")
     mail_config = download_json_from_drive(service, FILE_ID)
 
     sender_email = mail_config['email']
