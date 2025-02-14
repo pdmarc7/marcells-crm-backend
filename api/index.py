@@ -87,10 +87,17 @@ def send_email(subject, body, to_email):
     msg["Subject"] = subject
     
     msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()  # Upgrade to secure connection
+    server.login(sender_email, sender_password)  # Authenticate
+    server.sendmail(sender_email, to_email, msg.as_string())
+    server.quit()
+
     
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(sender_email, sender_password)
-        server.sendmail(sender_email, to_email, msg.as_string())
+    #with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+    #    server.login(sender_email, sender_password)
+    #    server.sendmail(sender_email, to_email, msg.as_string())
 
 def create_enquiry_file(filename, enquiry):
     #enquiry_json = json.dumps(enquiry, indent=4)
