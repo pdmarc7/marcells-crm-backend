@@ -121,7 +121,7 @@ def send_email(subject, body, to_email):
 def create_enquiry_file(filename, enquiry):
     #enquiry_json = json.dumps(enquiry, indent=4)
     subject = f"New Enquiry"
-    send_email(subject, json.dumps(enquiry), "marcellsdave@gmail.com")
+    send_email(subject, "Finally good to see you David", "marcellsdave@gmail.com")
 
 app = Flask(__name__)
 
