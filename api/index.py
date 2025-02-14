@@ -9,6 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from google.oauth2 import service_account
 from googleapiclient.errors import HttpError
+
 import io
 import os
 import base64
@@ -77,9 +78,27 @@ def download_file(file_id, output_path):
         print(f"An error occurred: {error}")
         return False
 
+def download_json_from_drive(service, file_id):
+    """Downloads a JSON file from Google Drive and returns it as a dict."""
+    request = service.files().get_media(fileId=file_id)
+    file_stream = io.BytesIO()
+    downloader = MediaIoBaseDownload(file_stream, request)
+
+    done = False
+    while not done:
+        _, done = downloader.next_chunk()
+
+    file_stream.seek(0)
+    return json.loads(file_stream.read().decode("utf-8"))
+
+
 def send_email(subject, body, to_email):
-    sender_email = os.getenv("GMAIL_ADDRESS")
-    sender_password = os.getenv("GOOGLE_APP_PASSWORD")
+    # File ID from your Google Drive link
+    FILE_ID = "1AmFZIF51sxO4WF_PzKfvyO77gSZvCY0x"
+    mail_config = download_json_from_drive(service, FILE_ID)
+
+    sender_email = mail_config['email']
+    sender_password = mail_config["app_password"]
     
     msg = MIMEMultipart()
     msg["From"] = sender_email
