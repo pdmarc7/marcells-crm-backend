@@ -79,8 +79,7 @@ def download_file(file_id, output_path):
 
 def send_email(subject, body, to_email):
     sender_email = os.getenv("GMAIL_ADDRESS")
-    sender_password = os.getenv("GOOGLE_APP_PASSWORD")
-    
+    sender_password = APP_PASSWORD = base64.b64decode(os.getenv("GOOGLE_APP_PASSWORD")).decode()
     msg = MIMEMultipart()
     msg["From"] = sender_email
     msg["To"] = to_email
