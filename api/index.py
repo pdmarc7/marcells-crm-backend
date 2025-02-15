@@ -37,7 +37,7 @@ os.unlink(temp_file_path)
 
 # Build the Drive API service
 service = build('drive', 'v3', credentials=creds)
-
+'''
 def upload_file(file_path, mime_type, file_name=None, folder_id=None):
     """Uploads a file to Google Drive."""
 
@@ -78,6 +78,106 @@ def download_file(file_id, output_path):
     except HttpError as error:
         print(f"An error occurred: {error}")
         return False
+'''
+
+ENQUIRY_TEMPLATE = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exciting Enquiry Alert!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Sarala:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .sarala-regular {
+          font-family: "Sarala", serif;
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        .sarala-bold {
+          font-family: "Sarala", serif;
+          font-weight: 700;
+          font-style: normal;
+        }
+
+
+        .rubik-regular {
+          font-family: "Rubik", serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        body {
+            font-family: 'Sarala', sans-serif;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+        .btn-primary {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h2>📩 {business_id} - ENQUIRY 🚀</h2>
+        </div>
+        <div class="content">
+            <p>Hey there,</p>
+            <p>You've got an exciting new enquiry! 🎉</p>
+            <p><strong>📛 From:</strong> {sender_name}</p>
+            <p><strong>📧 Email:</strong> {sender_email}</p>
+            <p><strong>💬 Message:</strong></p>
+            <blockquote style="border-left: 4px solid #007bff; padding-left: 10px; font-style: italic;">
+                {message}
+            </blockquote>
+            <!--<a href="#" class="btn-primary">📌 View Enquiry Now</a>-->
+        </div>
+        <!--<div class="footer">
+            <p>&copy; 2025 Your Company. All rights reserved.</p>
+            <p>🔗 <a href="#" style="color:#007bff; text-decoration:none;">Visit our website</a></p>
+        </div>-->
+    </div>
+</body>
+</html>
+
+'''
 
 def download_json_from_drive(service, file_id):
     """Downloads a JSON file from Google Drive and returns it as a dict."""
@@ -93,8 +193,17 @@ def download_json_from_drive(service, file_id):
     return json.loads(file_stream.read().decode("utf-8"))
 
 
-def send_email(subject, body, to_email):
-    # File ID from your Google Drive link
+def send_email(subject, body, to_email, is_html=False):
+    """
+    Sends an email with optional HTML formatting.
+
+    Args:
+        subject (str): Email subject.
+        body (str): Email body (can be plain text or HTML).
+        to_email (str): Recipient's email address.
+        is_html (bool): If True, sends an HTML email; otherwise, plain text.
+    """
+    # File ID from Google Drive link
     FILE_ID = os.getenv("CONFIG_FILE_ID")
     mail_config = download_json_from_drive(service, FILE_ID)
 
@@ -105,24 +214,28 @@ def send_email(subject, body, to_email):
     msg["From"] = sender_email
     msg["To"] = to_email
     msg["Subject"] = subject
-    
-    msg.attach(MIMEText(body, "plain"))
 
+    # Attach message body as HTML or plain text
+    msg.attach(MIMEText(body, "html" if is_html else "plain"))
+
+#    try:
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()  # Upgrade to secure connection
     server.login(sender_email, sender_password)  # Authenticate
+
     server.sendmail(sender_email, to_email, msg.as_string())
     server.quit()
+#        print("Email sent successfully.")
+#    except Exception as e:
+#        print(f"Error sending email: {e}")
 
-    
-    #with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-    #    server.login(sender_email, sender_password)
-    #    server.sendmail(sender_email, to_email, msg.as_string())
 
 def create_enquiry_file(filename, enquiry):
     enquiry_json = json.dumps(enquiry)
-    subject = f"New Enquiry"
-    send_email(subject, enquiry_json, "marcellsdave0@gmail.com")
+    subject = f"{enquiry_json['business_id']} - Enquiry From {enquiry_json['name']}"
+
+    body = ENQUIRY_TEMPLATE.format(business_id = enquiry_json['business_id'], sender_name=enquiry_json['name'], sender_email=enquiry_json['email'], message = enquiry_json['message'])
+    send_email(subject, body, "marcellsdave0@gmail.com", is_html=True)
 
 app = Flask(__name__)
 
