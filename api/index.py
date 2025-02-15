@@ -301,7 +301,7 @@ def add_to_mailinglist():
     
     business_id = data['business_id']
     if business_id not in mailinglist:
-        waitlist[business_id] = []
+        mailinglist[business_id] = []
 
     if email not in waitlist[business_id]:
         mailinglist[business_id].append(email)
