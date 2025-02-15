@@ -154,26 +154,17 @@ ENQUIRY_TEMPLATE = '''
     </style>
 </head>
 <body>
-    <div class="email-container">
-        <div class="header text-center">
-            <h2 class="display-4">📩 {{ business_id }}</h2> 
-            <h2>ENQUIRY</h2>
-        </div>
-        <div class="content">
-            <p>Hey there,</p>
-            <p>You've got an exciting new enquiry! 🎉</p>
-            <p><strong>📛 From:</strong> {{ sender_name }}</p>
-            <p><strong>📧 Email:</strong> {{ sender_email }}</p>
-            <p><strong>💬 Message:</strong></p>
-            <blockquote style="border-left: 4px solid #007bff; padding-left: 10px; font-style: italic;">
-                {{ message }}
-            </blockquote>
-            <!--<a href="#" class="btn-primary">📌 View Enquiry Now</a>-->
-        </div>
-        <!--<div class="footer">
-            <p>&copy; 2025 Your Company. All rights reserved.</p>
-            <p>🔗 <a href="#" style="color:#007bff; text-decoration:none;">Visit our website</a></p>
-        </div>-->
+    <h1 class="">{{ business_id }}</h1> 
+    {% if notification_type == "demo" %}
+    <h3>Request For Demo<h3>
+    {% else %}
+    <p style="font-size: 40px; font-family=Sarala">ENQUIRY<p>
+    {% endif %}
+    <br>
+
+    <p><From:</strong> {{ sender_name }} ({{ sender_email }}) </p>
+    <p>{{ message }}</p>
+            
     </div>
 </body>
 </html>
@@ -235,7 +226,7 @@ def create_enquiry_file(filename, enquiry):
     #enquiry_json = json.dumps(enquiry)
     subject = f"{enquiry['business_id']} - Enquiry From {enquiry['name']}"
 
-    body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'])
+    body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'], notifcation_type="enquiry")
     
     send_email(subject, body, "marcellsdave0@gmail.com", is_html=True)
 
