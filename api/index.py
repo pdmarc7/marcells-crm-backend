@@ -282,7 +282,33 @@ def update_file_in_drive(service, file_id, json_data):
     
     return updated_file
 
-MAILING_LIST_FILE_ID = os.getenv("MAILING_LIST_FILE_ID")
+@app.route('/subscribe_mail', methods=['POST'])
+def add_to_mailinglist():
+    MAILINGLIST_FILE_ID = os.getenv("MAILING_LIST_FILE_ID")
+    mailinglist = download_json_from_drive(service, MAILINGLIST_FILE_ID)
+    
+    if not request.is_json:
+        return jsonify({"error": "Invalid JSON request"}), 400
+    
+    data = request.get_json()
+    
+    if 'email' not in data or 'business_id' not in data:
+        return jsonify({"error": "Missing email or business_id"}), 400
+    
+    email = data['email']
+    #if not is_valid_email(email):
+    #    return jsonify({"error": "Invalid email format"}), 400
+    
+    business_id = data['business_id']
+    if business_id not in waitlist:
+        waitlist[business_id] = []
+
+    if email not in waitlist[business_id]:
+        waitlist[business_id].append(email)
+
+    update_file_in_drive(service, MAILINGLIST_FILE_ID, waitlist)
+    
+    return jsonify({"message": "OK", "email": email}), 200
 
 @app.route('/add_to_waitlist', methods=['POST'])
 def add_to_waitlist():
