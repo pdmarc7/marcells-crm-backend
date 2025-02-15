@@ -159,10 +159,14 @@ def update_waitlist(waitlist):
     #if os.environ.get("APP_STATUS") != "dev":
     upload_file("waitlist.json", "text/json")
 
-def update_file_in_drive(service, file_id):
-    """Updates an existing file on Google Drive without changing its file ID."""
-    media = MediaFileUpload(TEMP_FILE_PATH, mimetype="application/json", resumable=True)
+def update_file_in_drive(service, file_id, json_data):
+    """Uploads JSON data directly to Google Drive without writing to disk."""
+    json_bytes = json.dumps(json_data, indent=4).encode("utf-8")
+    json_stream = io.BytesIO(json_bytes)
+    
+    media = MediaIoBaseUpload(json_stream, mimetype="application/json", resumable=True)
     updated_file = service.files().update(fileId=file_id, media_body=media).execute()
+    
     return updated_file
 
 MAILING_LIST_FILE_ID = os.getenv("MAILING_LIST_FILE_ID")
@@ -191,8 +195,7 @@ def add_to_waitlist():
     if email not in waitlist[business_id]:
         waitlist[business_id].append(email)
 
-    dump_json(waitlist, "waitlist.json")
-    update_file_in_drive(service, WAITLIST_FILE_ID, "waitlist.json")
+    update_file_in_drive(service, WAITLIST_FILE_ID, waitlist)
     
     return jsonify({"message": "OK", "email": email})
 
@@ -215,8 +218,7 @@ def remove_from_waitlist():
         return jsonify({"error": "Email not found in waitlist"}), 404
     
     waitlist[business_id].remove(email)
-    dump_json(waitlist, "waitlist.json")
-    update_file_in_drive(service, WAITLIST_FILE_ID, "waitlist.json")
+    update_file_in_drive(service, WAITLIST_FILE_ID, waitlist)
     
     return jsonify({"message": "Removed", "email": email})
 
