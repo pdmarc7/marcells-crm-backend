@@ -223,7 +223,7 @@ def send_email(subject, body, to_email, is_html=False):
 
 def create_enquiry_file(filename, enquiry, demo=False):
     #enquiry_json = json.dumps(enquiry)
-    if demo
+    if demo:
         subject = f"{enquiry['business_id']} - Demo Request From {enquiry['name']}"
 
     else:
