@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template_string
 import json, os, re
 
 import smtplib
@@ -234,7 +234,8 @@ def create_enquiry_file(filename, enquiry):
     #enquiry_json = json.dumps(enquiry)
     subject = f"{enquiry['business_id']} - Enquiry From {enquiry['name']}"
 
-    body = ENQUIRY_TEMPLATE.format(business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'])
+    body = render_template_string(ENQUIRY_TEMPLATE,business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'])
+    
     send_email(subject, body, "marcellsdave0@gmail.com", is_html=True)
 
 app = Flask(__name__)
