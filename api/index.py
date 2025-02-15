@@ -300,13 +300,13 @@ def add_to_mailinglist():
     #    return jsonify({"error": "Invalid email format"}), 400
     
     business_id = data['business_id']
-    if business_id not in waitlist:
+    if business_id not in mailinglist:
         waitlist[business_id] = []
 
     if email not in waitlist[business_id]:
-        waitlist[business_id].append(email)
+        mailinglist[business_id].append(email)
 
-    update_file_in_drive(service, MAILINGLIST_FILE_ID, waitlist)
+    update_file_in_drive(service, MAILINGLIST_FILE_ID, mailinglist)
     
     return jsonify({"message": "OK", "email": email}), 200
 
