@@ -369,7 +369,7 @@ def request_demo():
     
     demo_request_filename = os.urandom(5).hex() + "_demo.json"
     #dump_json(data, demo_request_filename)
-    create_enquiry_file(demo_request_filename, data)
+    create_enquiry_file(demo_request_filename, data, demo=True)
     
     return jsonify({"message": "Demo request received", "data": data}), 200
 
