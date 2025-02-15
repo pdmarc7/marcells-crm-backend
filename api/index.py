@@ -158,9 +158,9 @@ ENQUIRY_TEMPLATE = '''
     {% if notification_type == "demo" %}
     <h4>Request For Demo</h4>
     {% else %}
-    <h4 style="font-size: 40px; font-family=Sarala">ENQUIRY</h4>
+    <h4>ENQUIRY</h4>
     {% endif %}
-    <p>From:</strong> {{ sender_name }} ({{ sender_email }}) </p>
+    <p><strong>From:</strong> {{ sender_name }} ({{ sender_email }}) </p>
     {% if notification_type == "enquiry" %}
     <p>{{ message }}</p>
     {% endif %}
