@@ -155,8 +155,9 @@ ENQUIRY_TEMPLATE = '''
 </head>
 <body>
     <div class="email-container">
-        <div class="header">
-            <h2>📩 {{ business_id }} - ENQUIRY 🚀</h2>
+        <div class="header text-center">
+            <h2 class="display-4">📩 {{ business_id }}</h2> 
+            <h2>ENQUIRY</h2>
         </div>
         <div class="content">
             <p>Hey there,</p>
