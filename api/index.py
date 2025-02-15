@@ -197,7 +197,7 @@ def add_to_waitlist():
 
     update_file_in_drive(service, WAITLIST_FILE_ID, waitlist)
     
-    return jsonify({"message": "OK", "email": email})
+    return jsonify({"message": "OK", "email": email}), 200
 
 @app.route('/remove_from_waitlist', methods=['POST'])
 def remove_from_waitlist():
@@ -220,7 +220,7 @@ def remove_from_waitlist():
     waitlist[business_id].remove(email)
     update_file_in_drive(service, WAITLIST_FILE_ID, waitlist)
     
-    return jsonify({"message": "Removed", "email": email})
+    return jsonify({"message": "Removed", "email": email}), 200
 
 @app.route('/receive_enquiry', methods=['POST'])
 def receive_enquiry():
