@@ -242,7 +242,7 @@ def receive_enquiry():
     #dump_json(data, enquiry_filename)
     create_enquiry_file(enquiry_filename, data)
     
-    return jsonify({"message": "Enquiry received", "data": data})
+    return jsonify({"message": "Enquiry received", "data": data}), 200
 
 @app.route('/request_demo', methods=['POST'])
 def request_demo():
@@ -263,7 +263,7 @@ def request_demo():
     #dump_json(data, demo_request_filename)
     create_enquiry_file(demo_request_filename, data)
     
-    return jsonify({"message": "Demo request received", "data": data})
+    return jsonify({"message": "Demo request received", "data": data}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
