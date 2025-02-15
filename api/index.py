@@ -156,15 +156,14 @@ ENQUIRY_TEMPLATE = '''
 <body>
     <h1 class="">{{ business_id }}</h1> 
     {% if notification_type == "demo" %}
-    <h3 style="font-size: 40px; font-family=Sarala">Request For Demo<h3>
+    <h4>Request For Demo</h4>
     {% else %}
-    <p style="font-size: 40px; font-family=Sarala">ENQUIRY<p>
+    <h4 style="font-size: 40px; font-family=Sarala">ENQUIRY</h4>
     {% endif %}
-    <br>
-
-    <p><strong>From:</strong> {{ sender_name }} ({{ sender_email }}) </p>
+    <p>From:</strong> {{ sender_name }} ({{ sender_email }}) </p>
+    {% if notification_type == "enquiry" %}
     <p>{{ message }}</p>
-            
+    {% endif %}
     </div>
 </body>
 </html>
@@ -222,11 +221,14 @@ def send_email(subject, body, to_email, is_html=False):
 #        print(f"Error sending email: {e}")
 
 
-def create_enquiry_file(filename, enquiry):
+def create_enquiry_file(filename, enquiry, demo=False):
     #enquiry_json = json.dumps(enquiry)
     subject = f"{enquiry['business_id']} - Enquiry From {enquiry['name']}"
 
-    body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'], notifcation_type="enquiry")
+    if demo:
+        body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], notifcation_type="demo")
+    else:
+        body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'], notifcation_type="enquiry")
     
     send_email(subject, body, "marcellsdave0@gmail.com", is_html=True)
 
