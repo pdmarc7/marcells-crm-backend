@@ -226,9 +226,9 @@ def create_enquiry_file(filename, enquiry, demo=False):
     subject = f"{enquiry['business_id']} - Enquiry From {enquiry['name']}"
 
     if demo:
-        body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], notifcation_type="demo")
+        body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], notification_type="demo")
     else:
-        body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'], notifcation_type="enquiry")
+        body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'], notification_type="enquiry")
     
     send_email(subject, body, "marcellsdave0@gmail.com", is_html=True)
 
