@@ -231,10 +231,10 @@ def send_email(subject, body, to_email, is_html=False):
 
 
 def create_enquiry_file(filename, enquiry):
-    enquiry_json = json.dumps(enquiry)
-    subject = f"{enquiry_json['business_id']} - Enquiry From {enquiry_json['name']}"
+    #enquiry_json = json.dumps(enquiry)
+    subject = f"{enquiry['business_id']} - Enquiry From {enquiry['name']}"
 
-    body = ENQUIRY_TEMPLATE.format(business_id = enquiry_json['business_id'], sender_name=enquiry_json['name'], sender_email=enquiry_json['email'], message = enquiry_json['message'])
+    body = ENQUIRY_TEMPLATE.format(business_id = enquiry_json['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], message = enquiry['message'])
     send_email(subject, body, "marcellsdave0@gmail.com", is_html=True)
 
 app = Flask(__name__)
