@@ -303,7 +303,7 @@ def add_to_mailinglist():
     if business_id not in mailinglist:
         mailinglist[business_id] = []
 
-    if email not in waitlist[business_id]:
+    if email not in mailinglist[business_id]:
         mailinglist[business_id].append(email)
 
     update_file_in_drive(service, MAILINGLIST_FILE_ID, mailinglist)
