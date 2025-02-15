@@ -223,7 +223,11 @@ def send_email(subject, body, to_email, is_html=False):
 
 def create_enquiry_file(filename, enquiry, demo=False):
     #enquiry_json = json.dumps(enquiry)
-    subject = f"{enquiry['business_id']} - Enquiry From {enquiry['name']}"
+    if demo
+        subject = f"{enquiry['business_id']} - Demo Request From {enquiry['name']}"
+
+    else:
+        subject = f"{enquiry['business_id']} - Enquiry From {enquiry['name']}"
 
     if demo:
         body = render_template_string(ENQUIRY_TEMPLATE, business_id = enquiry['business_id'], sender_name=enquiry['name'], sender_email=enquiry['email'], notification_type="demo")
