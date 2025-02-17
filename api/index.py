@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, request, render_template_string
+from flask_cors import CORS
+
 import json, os, re
 
 import smtplib
@@ -15,6 +17,15 @@ import io
 import os
 import base64
 import tempfile
+
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = "mongodb+srv://marcellsdave0:JK47pUdOHMC0AFvL@inoma.7ey1w.mongodb.net/?retryWrites=true&w=majority&appName=Inoma"
+
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+db = client["inoma"]
 
 # Decode the base64-encoded service account JSON
 json_str = base64.b64decode(os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")).decode()
@@ -238,6 +249,9 @@ def create_enquiry_file(filename, enquiry, demo=False):
 
 app = Flask(__name__)
 
+# Allow all origins (for testing)
+CORS(app, origins=["https://tracepoint-780d6.web.app"])  
+
 def dump_json(data, filename):
     with open(filename, 'w') as json_file:
         json.dump(data, json_file, indent=4)
@@ -281,7 +295,42 @@ def update_file_in_drive(service, file_id, json_data):
     updated_file = service.files().update(fileId=file_id, media_body=media).execute()
     
     return updated_file
+'''
+@app.route('/join-referral-programme', methods=['POST'])
+def join_referral_programme():
+    if not request.is_json:
+        return jsonify({"error": "Invalid JSON request"}), 400
+    
+    data = request.get_json()
 
+    for field in ["email", "name", "business_id"]:
+        if field not in data:
+            return jsonify({"error": f"Missing {field}"}), 400
+
+    email = data['email']    
+    name = data['name']
+    business_id = data['business_id']
+    referral_code = os.urandon(5).hex()
+
+    if db["referral-programme-subscribers"].find_one({
+        "email": email,
+        "business_id": business_id 
+    }):
+        return jsonify({"error": "User account already in referral programme"}), 400  
+    
+    
+    #if 'email' not in data or 'business_id' not in data:
+    #    return jsonify({"error": "Missing email or business_id"}), 400
+    db['referral-programme-subscribers'].insert({
+        "business_id": business_id,
+        "name": name,
+        "email": email,
+        "referral_code": referral_code
+    })
+    subject = "Welcome To Our Referral Programme"
+    body = ""
+    send_email(subject, body, to_email, is_html=False)
+'''
 @app.route('/subscribe_mail', methods=['POST'])
 def add_to_mailinglist():
     MAILINGLIST_FILE_ID = os.getenv("MAILING_LIST_FILE_ID")
