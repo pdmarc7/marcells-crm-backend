@@ -1,8 +1,4 @@
-google_api_python_client
 Requests
 Flask
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
 pymongo[srv]
 Flask-Cors
