@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, render_template_string
 from flask_cors import CORS
 
-import json, os, re
+import json, os, re, time
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -87,12 +87,11 @@ def join_referral_programme():
     name = data['name']
     eth_address = data["eth_address"]
     business_id = data['business_id']
-    referral_code = os.urandon(5).hex()
+    referral_code = os.urandom(5).hex()
 
     if db["referral-agent"].find_one({"email": email, "business_id": business_id }):
         return jsonify({"error": "Your email already exists in our referral programme"}), 400  
-    
-    
+        
     db['referral-agent'].insert_one({"business_id": business_id, "name": name, "email": email, "referral_code": referral_code, "eth_address": eth_address})
     return jsonify({"message": "OK", "email": email, "name": name, "referral_code": referral_code, "eth_address": eth_address}), 200
 
@@ -252,4 +251,3 @@ def request_demo():
 
 if __name__ == '__main__':
     app.run(debug=True)
-   
