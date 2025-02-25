@@ -2,3 +2,4 @@ Requests
 Flask
 pymongo[srv]
 Flask-Cors
+web3
