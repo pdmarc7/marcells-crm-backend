@@ -66,7 +66,7 @@ def leave_referral_programme():
     email = data['email']
     business_id = data['business_id']
 
-    if not in db["referral-agent"].find_one({"email": email, "business_id": business_id }):
+    if not db["referral-agent"].find_one({"email": email, "business_id": business_id }):
         return jsonify({"error": "Your email is not in our referral programme"}), 400  
     
     db['referral-agent'].delete_one({"business_id": business_id, "email": email})
