@@ -42,7 +42,7 @@ def verify_payment():
     business_id = data['business_id']
 
     if web3.is_connected():
-        tx_receipt = web3.eth.get_transaction_receipt(tx_hash)
+        tx_receipt = web3.eth.get_transaction_receipt(txn_hash)
 
         if tx_receipt:
             if tx_receipt.status == 1:
