@@ -33,7 +33,7 @@ def verify_payment():
     
     data = request.get_json()
 
-    for field in ["email", "txn-hash","business_id"]:
+    for field in ["email", "txn_hash","business_id"]:
         if field not in data:
             return jsonify({"error": f"Missing {field}"}), 400
 
