@@ -184,7 +184,7 @@ def add_to_waitlist():
     business_id = data['business_id']
     
     if not waitlist.find_one({'email': email, 'business_id': business_id}):
-        waitlist[business_id].insert_one({'email': email, 'business_id': business_id})
+        waitlist.insert_one({'email': email, 'business_id': business_id})
     else:
         return jsonify({"error": "Your email already exists in our wait-list"}), 400
     
@@ -251,3 +251,4 @@ def request_demo():
 
 if __name__ == '__main__':
     app.run(debug=True)
+   
