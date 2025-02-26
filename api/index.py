@@ -206,7 +206,7 @@ def remove_from_waitlist():
     business_id = data['business_id']
 
     if waitlist.find_one({'email': email, 'business_id': business_id}):
-        waitlist.remove_one({'email': email, 'business_id': business_id})
+        waitlist.delete_one({'email': email, 'business_id': business_id})
     else: 
         return jsonify({"error": "Your mail not found in our wait-list"}), 404
     
@@ -228,7 +228,7 @@ def receive_enquiry():
     data["date"] = time.ctime()
 
     db["enquiry"].insert_one(data)    
-    return jsonify({"message": "Enquiry received", "data": data}), 200
+    return jsonify({"message": "Enquiry received"}), 200
 
 @app.route('/request_demo', methods=['POST'])
 def request_demo():
@@ -247,7 +247,7 @@ def request_demo():
     data["date"] = time.ctime()
 
     db["demo-request"].insert_one(data)
-    return jsonify({"message": "Demo request received", "data": data}), 200
+    return jsonify({"message": "Demo request received"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
