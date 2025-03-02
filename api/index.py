@@ -22,9 +22,21 @@ app = Flask(__name__)
 # Allow all origins (for testing)
 CORS(app, origins=["https://tracepoint-780d6.web.app"])  
 
-
 def is_valid_email(email):
     return re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", email)
+
+@app.route("/invoice", methods=["POST"])
+def get_invoice():
+    data = request.get_json()
+    invoice_id = data.get("invoice_id")
+    if not invoice_id:
+        return jsonify({"error": "Missing invoice_id"}), 400
+    
+    invoice = db["invoice"].find_one({"invoice_id": invoice_id})
+    if invoice:
+        invoice["_id"] = str(invoice["_id"])  # Convert ObjectId to string
+        return jsonify(invoice)
+    return jsonify({"error": "Invoice not found"}), 404
 
 @app.route('/verify_payment', methods=['POST'])
 def verify_payment():
