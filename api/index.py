@@ -20,7 +20,7 @@ db = client["inoma"]
 app = Flask(__name__)
 
 # Allow all origins (for testing)
-CORS(app, origins=["https://tracepoint-780d6.web.app"])  
+CORS(app, origins=["https://tracepoint-780d6.web.app", "http://127.0.0.1:8080"])  
 
 def is_valid_email(email):
     return re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", email)
