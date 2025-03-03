@@ -64,9 +64,11 @@ def verify_payment():
                 invoice = db["invoice"].find_one({"invoice_id": invoice_id})
                 if invoice:
                     updated_recs = {
-                        "status":"succcess",
-                        "txn_hash": txn_hash,
-                        "business_id": business_id
+                        "$set": {
+                            "status":"succcess",
+                            "txn_hash": txn_hash,
+                            "business_id": business_id
+                        }
                     }
 
                     db['invoice'].update_one({"invoice_id": invoice_id}, updated_recs)
