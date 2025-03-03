@@ -45,20 +45,35 @@ def verify_payment():
     
     data = request.get_json()
 
-    for field in ["email", "txn_hash","business_id"]:
+    for field in ["email", "txn_hash","business_id", "invoice_id"]:
         if field not in data:
             return jsonify({"error": f"Missing {field}"}), 400
 
     email = data['email']
     txn_hash = data['txn_hash']
     business_id = data['business_id']
+    invoice_id = data["invoice_id"]
 
     if web3.is_connected():
         tx_receipt = web3.eth.get_transaction_receipt(txn_hash)
 
         if tx_receipt:
             if tx_receipt.status == 1:
-                db['transactions'].insert_one({'email': data['email'], 'txn_hash': data['txn_hash'], 'business_id': data['business_id']})
+                #db['transactions'].insert_one({'email': data['email'], 'txn_hash': data['txn_hash'], 'business_id': data['business_id']})
+
+                invoice = db["invoice"].find_one({"invoice_id": invoice_id})
+                if invoice:
+                    updated_recs = {
+                        "status":"succcess",
+                        "txn_hash": txn_hash,
+                        "business_id": business_id
+                    }
+
+                    db.update_one({"invoice_id": invoice_id}, updated_recs)
+                else:
+                    return jsonify({"error": "Invoice not found"}), 404
+
+                
                 return jsonify({'message': 'OK'}), 200
             else:
                 return jsonify({"error": f"Transaction not yet confirmed. Try again later."}), 400
