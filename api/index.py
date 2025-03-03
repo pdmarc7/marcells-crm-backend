@@ -69,7 +69,7 @@ def verify_payment():
                         "business_id": business_id
                     }
 
-                    db.update_one({"invoice_id": invoice_id}, updated_recs)
+                    db['invoice'].update_one({"invoice_id": invoice_id}, updated_recs)
                 else:
                     return jsonify({"error": "Invoice not found"}), 404
 
