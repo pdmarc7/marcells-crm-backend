@@ -8,10 +8,10 @@ from pymongo.server_api import ServerApi
 
 from web3 import Web3
 
-INFURA_URL = "https://sepolia.infura.io/v3/e4c9334246014e5a8e61e23c7d325dd0"  # Use Goerli if preferred
+INFURA_URL = os.environ["INFURA_URL"]  # Use Goerli if preferred
 web3 = Web3(Web3.HTTPProvider(INFURA_URL))
 
-mongo_atlas_uri = "mongodb+srv://marcellsdave0:JK47pUdOHMC0AFvL@inoma.7ey1w.mongodb.net/?retryWrites=true&w=majority&appName=Inoma"
+mongo_atlas_uri = os.environ["MONGO_ATLAS_URI"]
 
 # Create a new client and connect to the server
 client = MongoClient(mongo_atlas_uri, server_api=ServerApi('1'))
@@ -20,7 +20,7 @@ db = client["inoma"]
 app = Flask(__name__)
 
 # Allow all origins (for testing)
-CORS(app, origins=["https://tracepoint-780d6.web.app", "http://127.0.0.1:8080"])  
+CORS(app, origins=["https://tracepoint-780d6.web.app"])  
 
 def is_valid_email(email):
     return re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", email)
@@ -280,4 +280,3 @@ def request_demo():
 
 if __name__ == '__main__':
     app.run(debug=True)
-   
